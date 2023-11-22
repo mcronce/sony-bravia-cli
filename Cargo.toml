@@ -1,0 +1,7 @@
+[package]
+name = "sony-bravia-cli"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serialport = {version = "4.2.2", default-features = false}

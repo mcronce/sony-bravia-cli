@@ -1,9 +1,6 @@
 use std::env;
 use std::io::Write;
-use std::str;
 use std::time::Duration;
-
-const SERIAL_DEV: &str = "/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_B001CPKZ-if00-port0";
 
 const CONTROL_REQUEST: u8 = 0x8c;
 const QUERY_REQUEST: u8 = 0x83;
@@ -84,7 +81,7 @@ fn print_status(port: &mut Box<dyn serialport::SerialPort>) {
 }
 
 fn print_usage() {
-    eprintln!("usage: [on|off|power|volume-up|volume-down|mute|status]");
+    eprintln!("usage: DEVICE [on|off|power|volume-up|volume-down|mute|status]");
 }
 
 fn write_command(port: &mut Box<dyn serialport::SerialPort>, contents: Vec<u8>) -> Vec<u8> {
@@ -129,7 +126,7 @@ fn write_command(port: &mut Box<dyn serialport::SerialPort>, contents: Vec<u8>) 
 fn main() {
     let args: Vec<String> = env::args().collect();
     match args.len() {
-        2 => {}
+        3 => {}
         _ => {
             print_usage();
             eprintln!("error: unexpected argument(s)");
@@ -137,11 +134,11 @@ fn main() {
         }
     }
 
-    let mut port = serialport::new(SERIAL_DEV, 9600)
+    let mut port = serialport::new(&args[1], 9600)
         .timeout(Duration::from_millis(500))
         .open()
         .expect("Failed to open port.");
-    match &args[1][..] {
+    match &args[2][..] {
         "on" => power_on(&mut port),
         "off" => power_off(&mut port),
         "power" => power_toggle(&mut port),
